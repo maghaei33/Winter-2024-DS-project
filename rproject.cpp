@@ -242,6 +242,28 @@ string findSameParent(string x, string y)
     }
 }
 
+// The farthest born
+int farthestBorn(string name)
+{
+    int count = 0;
+    node *parent = new node();
+    parent = find(name, head);
+    if (parent->firstChild == NULL)
+    {
+        return 0;
+    }
+    else
+    {
+        node *child = parent->firstChild;
+        while (child != NULL)
+        {
+            count++;
+            child = child->firstChild;
+        }
+        return count;
+    }
+}
+
 int main()
 {
     while (true)

@@ -1,132 +1,257 @@
-#include<iostream>
-#include<string>
-#include<vector>
+
+#include <iostream>
+#include <string>
+#include <vector>
 
 using namespace std;
 
 struct node
 {
-    node* bigchild;
-    node* brosis;
+    node *parent;
+    node *firstChild;
+    node *broSis;
     string name;
 };
-node* head = new node();
+node *head = new node();
 
-vector <string> father;
-vector <string>child;
-vector <node>id;
+node *find(string x, node *p);
+bool isGrandParent(string x, string y);
+bool isBroSis(string x, string y);
 
-void start(string member)
+vector<string> parent_1;
+vector<string> parent_2;
+
+// size function
+int size(int t, node *p)
 {
-    head->name=member;
-}
-void isnodehere (string x , node* p , int t)
-{
-    if(p->name==x)
+    if (p->firstChild != NULL && p->broSis == NULL)
     {
-        t=1;
+        t++;
+        size(t, p->firstChild);
     }
-    else
+    if (p->firstChild == NULL && p->broSis != NULL)
     {
-        if(p->bigchild!=NULL && p->brosis==NULL)
+        t++;
+        size(t, p->broSis);
+    }
+    if (p->firstChild == NULL && p->broSis == NULL)
+    {
+        t++;
+        t++;
+        size(t, p->firstChild);
+        size(t, p->broSis);
+    }
+    return t;
+}
+
+// delete function
+void deleteMember(string x)
+{
+    node *p = new node();
+    p = find(x, head);
+    if (p->parent->firstChild == p)
+    {
+        if (p->broSis != NULL)
         {
-            isnodehere(x, p->bigchild , t);
+            p->parent->firstChild = p->broSis;
         }
-        if(p->bigchild==NULL && p->brosis!=NULL)
+        else
         {
-            isnodehere(x, p->brosis , t);
-        }
-        if(p->bigchild!=NULL && p->brosis!=NULL)
-        {
-            isnodehere(x, p->brosis , t);
-            isnodehere(x, p->bigchild , t);  
+            p->parent->firstChild = NULL;
         }
     }
-    
+    if (p->parent->broSis == p)
+    {
+        if (p->broSis != NULL)
+        {
+            p->parent->broSis = p->broSis;
+        }
+        else
+        {
+            p->parent->broSis = NULL;
+        }
+    }
 }
-node* foundnode(string x , node* p)
+
+// find finction
+node *find(string x, node *p)
 {
-    if(p->name==x)
+    if (p->name == x)
     {
         return p;
     }
     else
     {
-        if(p->bigchild!=NULL && p->brosis==NULL)
+        if (p->firstChild != NULL && p->broSis == NULL)
         {
-            foundnode(x, p->bigchild);
+            find(x, p->firstChild);
         }
-        if(p->bigchild==NULL && p->brosis!=NULL)
+        if (p->firstChild == NULL && p->broSis != NULL)
         {
-            foundnode(x, p->brosis);
+            find(x, p->broSis);
         }
-        if(p->bigchild!=NULL && p->brosis!=NULL)
+        if (p->firstChild != NULL && p->broSis != NULL)
         {
-            foundnode(x, p->brosis);
-            foundnode(x, p->bigchild);  
+            find(x, p->broSis);
+            find(x, p->firstChild);
         }
-
-
     }
 }
-void addmember(string father,string member , node* p)
+
+// add function
+void addstart(string member)
 {
-    if(p->name==father)
+    head->name = member;
+}
+void add(string parent, string member, node *p)
+{
+    if (p->name == parent)
     {
-        node* child = new node();
-        child->name=member;
-        if(p->bigchild==NULL)
+        node *child = new node();
+        child->name = member;
+        child->parent = p;
+        if (p->firstChild == NULL)
         {
-            p->bigchild=child;
+            p->firstChild = child;
         }
         else
         {
-            while(p->brosis!=NULL)
+            while (p->broSis != NULL)
             {
-                p=p->brosis;
+                p = p->broSis;
             }
-            p->brosis=child;
+            p->broSis = child;
         }
     }
     else
     {
-        if(p->bigchild!=NULL && p->brosis==NULL)
+        if (p->firstChild != NULL && p->broSis == NULL)
         {
-            addmember(father, member, p->brosis);
+            add(parent, member, p->firstChild);
         }
-        if(p->bigchild==NULL && p->brosis!=NULL)
+        if (p->firstChild == NULL && p->broSis != NULL)
         {
-            addmember(father, member, p->bigchild);
+            add(parent, member, p->broSis);
         }
-        if(p->bigchild!=NULL && p->brosis!=NULL)
+        if (p->firstChild != NULL && p->broSis != NULL)
         {
-            addmember(father, member, p->brosis);
-            addmember(father, member, p->bigchild);  
+            add(parent, member, p->broSis);
+            add(parent, member, p->firstChild);
         }
-
     }
-
 }
-void removemember (string member , node* p)
+
+// A function
+bool isGrandParent(string x, string y)
 {
-
+    node *k = new node();
+    k = find(y, head);
+    if (isBroSis(x, y) == true)
+    {
+        return false;
+    }
+    else
+    {
+        while (k->parent != NULL)
+        {
+            if (k->parent->name == x)
+            {
+                return true;
+                break;
+            }
+            else
+            {
+                k = k->parent;
+            }
+        }
+        if (k->parent == NULL)
+        {
+            return false;
+        }
+    }
 }
 
-//A function
-bool isxgrandparent (string x , string y , int t , node* p)
+// B function
+bool isBroSis(string x, string y)
 {
-    //if();
+    int t_1 = 0;
+    int t_2 = 0;
+    node *r_1 = new node();
+    node *r_2 = new node();
+    r_1 = find(x, head);
+    r_2 = find(y, head);
+    while (r_1->broSis != NULL)
+    {
+        if (r_1->name == y)
+        {
+            t_1 = 1;
+            break;
+        }
+        else
+        {
+            r_1 = r_1->broSis;
+        }
+    }
+    while (r_2->broSis != NULL)
+    {
+        if (r_2->name == y)
+        {
+            t_2 = 1;
+            break;
+        }
+        else
+        {
+            r_2 = r_2->broSis;
+        }
+    }
+    if (t_1 == 1 || t_2 == 1)
+    {
+        return true;
+    }
+    if (t_1 == 0 && t_2 == 0)
+    {
+        return false;
+    }
 }
+
+// C function
+bool distanRelation(string x, string y)
+{
+    if (isGrandParent(x, y) == false && isBroSis(x, y) == false)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+// D function
+string findSameParent(string x, string y)
+{
+    node *r_1 = new node();
+    node *r_2 = new node();
+    r_1 = find(x, head);
+    r_2 = find(y, head);
+    if (isBroSis(x, y) == true)
+    {
+    }
+    if (isGrandParent(x, y) == true)
+    {
+    }
+}
+
 int main()
 {
-    while(true)
+    while (true)
     {
-        cout<<"Welcome to Family Tree!\n";
+        cout << "Welcome to Family Tree!\n";
         cout << "Choose appropriate number\n";
-        cout<<"1) Add a new member to tree\n";
-        cout<<"2) Remove a member from tree\n";
-        int t;
-        cin >> t;
+        cout << "1) Add a new member to tree\n";
+        cout << "2) Remove a member from tree\n";
+        int command;
+        cin >> command;
     }
     return 0;
 }

@@ -141,7 +141,7 @@ void add(string parent, string member, node *p)
     }
 }
 
-// A function
+// isGrandParent function
 bool isGrandParent(string x, string y)
 {
     node *k = new node();
@@ -171,7 +171,7 @@ bool isGrandParent(string x, string y)
     }
 }
 
-// B function
+// isBroSis function
 bool isBroSis(string x, string y)
 {
     int t_1 = 0;
@@ -214,7 +214,7 @@ bool isBroSis(string x, string y)
     }
 }
 
-// C function
+// distanRelation function
 bool distanRelation(string x, string y)
 {
     if (isGrandParent(x, y) == false && isBroSis(x, y) == false)
@@ -227,7 +227,7 @@ bool distanRelation(string x, string y)
     }
 }
 
-// D function
+// findSameParent function
 string findSameParent(string x, string y)
 {
     node *r_1 = new node();
@@ -242,26 +242,19 @@ string findSameParent(string x, string y)
     }
 }
 
-// The farthest born
+// farthestBorn function
 int farthestBorn(string name)
 {
     int count = 0;
     node *parent = new node();
     parent = find(name, head);
-    if (parent->firstChild == NULL)
+    node *child = parent->firstChild;
+    while (child != NULL)
     {
-        return 0;
+        count++;
+        child = child->firstChild;
     }
-    else
-    {
-        node *child = parent->firstChild;
-        while (child != NULL)
-        {
-            count++;
-            child = child->firstChild;
-        }
-        return count;
-    }
+    return count;
 }
 
 int main()

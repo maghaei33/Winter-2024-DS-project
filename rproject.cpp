@@ -1,9 +1,8 @@
 
 #include<iostream>
 #include<string>
-
+#include<vector>
 using namespace std;
-
 struct node
 {
     node* father;
@@ -12,6 +11,13 @@ struct node
     string name;
 };
 node* head = new node();
+
+node* find(string x, node* p);
+bool isxgrandparent (string x , string y);
+bool isbrosisxy(string x , string y);
+
+vector <string> father1;
+vector <string> father2;
 
 //size function
 int size(int t , node* p)
@@ -40,7 +46,7 @@ int size(int t , node* p)
 void deleten (string x)
 {
     node* p=new node();
-    p = find(x,head);
+    p = find(x , head);
     if(p->father->bigchild==p)
     {
         if(p->brosis!=NULL)
@@ -136,39 +142,118 @@ void add(string father,string member , node* p)
 
 }
 
-//continue
-
-void inhertitence (string x , node* p , int t)
+//A function
+bool isxgrandparent (string x , string y)
 {
-    if(p->name==x)
+    node* k=new node();
+    k = find(y,head);
+    if(isbrosisxy(x , y)==true)
     {
-        t=1;
+        return false;
     }
     else
     {
-        if(p->bigchild!=NULL && p->brosis==NULL)
+        while(k->father!=NULL)
         {
-            inhertitence(x, p->bigchild , t);
+            if(k->father->name==x)
+            {
+                return true;
+                break;
+            }
+            else
+            {
+                k = k->father;
+            }
         }
-        if(p->bigchild==NULL && p->brosis!=NULL)
+        if(k->father==NULL)
         {
-            inhertitence(x, p->brosis , t);
+            return false;
         }
-        if(p->bigchild!=NULL && p->brosis!=NULL)
+    }
+}
+//B function
+bool isbrosisxy (string x , string y )
+{
+    int t1=0;
+    int t2=0;
+    node* r1 = new node();
+    node* r2 = new node();
+    r1 = find(x,head);
+    r2 = find(y,head);
+    while(r1->brosis!=NULL)
+    {
+        if(r1->name==y)
         {
-            inhertitence(x, p->brosis , t);
-            inhertitence(x, p->bigchild , t);  
+            t1=1;
+            break;
         }
+        else
+        {
+            r1=r1->brosis;
+        }
+
+    }
+    while(r2->brosis!=NULL)
+    {
+        if(r2->name==y)
+        {
+            t2=1;
+            break;
+        }
+        else
+        {
+            r2=r2->brosis;
+        }
+
+    }
+    if(t1==1 || t2==1)
+    {
+        return true;
+    }
+    if (t1==0 && t2==0)
+    {
+        return false;
+    }
+
+}
+
+//C function
+bool longrel (string x , string y)
+{
+    if (isxgrandparent(x,y)==false && isbrosisxy(x,y)==false)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
     }
     
 }
-
-
-//A function
-bool isxgrandparent (string x , string y , int t , node* p)
+//D function
+string findsameparent(string x, string y)
 {
-    //if();
+    node* r1= new node();
+    node* r2 = new node();
+    r1 = find(x , head);
+    r2 = find(y , head);
+    if(isbrosisxy(x,y)==true)
+    {
+
+    }
+    if(isxgrandparent(x,y)==true)
+    {
+        
+    }
+
 }
+
+
+
+
+
+
+
 int main()
 {
     while(true)

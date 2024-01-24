@@ -100,7 +100,7 @@ node *find(string x, node *p)
     }
 }
 
-// add function
+// add functions
 void addstart(string member)
 {
     head->name = member;

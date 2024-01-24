@@ -2,6 +2,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include "MD5.h"
 
 using namespace std;
 
@@ -11,6 +12,7 @@ struct node
     node *firstChild;
     node *broSis;
     string name;
+    int level;
 };
 node *head = new node();
 
@@ -230,31 +232,37 @@ bool distanRelation(string x, string y)
 // findSameParent function
 string findSameParent(string x, string y)
 {
-    node *r_1 = new node();
-    node *r_2 = new node();
-    r_1 = find(x, head);
-    r_2 = find(y, head);
-    if (isBroSis(x, y) == true)
+    node *a = find(x, head);
+    node *b = find(y, head);
+    if (a->level > b->level)
     {
+        while (a->level != b->level)
+        {
+            a = a->parent;
+        }
     }
-    if (isGrandParent(x, y) == true)
+    else if (a->level < b->level)
     {
+        while (b->level != a->level)
+        {
+            b = b->parent;
+        }
+    }
+    else
+    {
+        while (a != b)
+        {
+            a = a->parent;
+            b = b->parent;
+        }
+        return a->name;
     }
 }
 
 // farthestBorn function
 int farthestBorn(string name)
 {
-    int count = 0;
-    node *parent = new node();
-    parent = find(name, head);
-    node *child = parent->firstChild;
-    while (child != NULL)
-    {
-        count++;
-        child = child->firstChild;
-    }
-    return count;
+    // later
 }
 
 int main()

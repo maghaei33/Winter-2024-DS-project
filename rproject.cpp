@@ -79,26 +79,20 @@ void deleteMember(string x)
 // find finction
 node *find(string x, node *p)
 {
+    if (p == NULL)
+    {
+        return NULL;
+    }
     if (p->name == x)
     {
         return p;
     }
-    else
+    node *result = find(x, p->firstChild);
+    if (result != NULL)
     {
-        if (p->firstChild != NULL && p->broSis == NULL)
-        {
-            find(x, p->firstChild);
-        }
-        if (p->firstChild == NULL && p->broSis != NULL)
-        {
-            find(x, p->broSis);
-        }
-        if (p->firstChild != NULL && p->broSis != NULL)
-        {
-            find(x, p->broSis);
-            find(x, p->firstChild);
-        }
+        return result;
     }
+    return find(x, p->broSis);
 }
 
 // add functions
@@ -111,6 +105,7 @@ void add(string parent, string member, int level)
 {
     node *p = new node();
     p = find(parent, head);
+    cout << p->name << endl;
     node *child = new node();
     child->name = member;
     child->parent = p;

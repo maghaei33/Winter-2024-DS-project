@@ -1,11 +1,10 @@
-
 #include <iostream>
 #include <string>
 #include <vector>
 #include <cstring>
-
+#include <algorithm>
+#include "MD5.h"
 using namespace std;
-
 struct node
 {
     node *parent = nullptr;
@@ -14,7 +13,7 @@ struct node
     string name;
     int level;
 };
-
+// salam
 node *head = new node();
 
 node *find(string x, node *p);
@@ -23,8 +22,8 @@ bool isbroSis(string x, string y);
 
 vector<string> parent_1;
 vector<string> parent_2;
-
-// size function
+//---------------------------------------------------Part1 : Basic functions : size-delete-find-add
+// size function - O(n)
 int size(int t, node *p)
 {
     if (p == NULL)
@@ -37,7 +36,7 @@ int size(int t, node *p)
     return t;
 }
 
-// delete function
+// delete function - O(n)
 void deleteMember(string x)
 {
     node *p = new node();
@@ -66,26 +65,31 @@ void deleteMember(string x)
     }
 }
 
-// find finction
+// find fnction - O(n)
 node *find(string x, node *p)
 {
+
     if (p == NULL)
     {
-        return NULL;
+        return nullptr;
     }
+
     if (p->name == x)
     {
         return p;
     }
-    node *result = find(x, p->firstChild);
-    if (result != NULL)
+
+    node *result = find(x, p->broSis);
+    if (result != nullptr)
     {
         return result;
     }
-    return find(x, p->broSis);
+    return result;
+
+    return find(x, p->firstChild);
 }
 
-// add functions
+// add functions - O(1) , O(n+|brosis|)
 void addstart(string member)
 {
     head->name = member;
@@ -114,7 +118,9 @@ void add(string parent, string member, int level)
     }
 }
 
-// isGrandParent function
+//---------------------------------------------------Part2 : Advance functions : isGrandParent-isbroSis-distanRelation-findSameParent-farthestBorn-farthestRelation
+
+// isGrandParent function - O(n+|brosis|)
 bool isGrandParent(string x, string y)
 {
     node *k = new node();
@@ -144,11 +150,9 @@ bool isGrandParent(string x, string y)
     }
 }
 
-// isbroSis function
+// isbroSis function - O(n)
 bool isbroSis(string x, string y)
 {
-    // int t_1 = 0;
-    // int t_2 = 0;
     node *r_1 = new node();
     node *r_2 = new node();
     r_1 = find(x, head);
@@ -161,41 +165,9 @@ bool isbroSis(string x, string y)
     {
         return false;
     }
-    // while (r_1->broSis != NULL)
-    // {
-    //     if (r_1->name == y)
-    //     {
-    //         t_1 = 1;
-    //         break;
-    //     }
-    //     else
-    //     {
-    //         r_1 = r_1->broSis;
-    //     }
-    // }
-    // while (r_2->broSis != NULL)
-    // {
-    //     if (r_2->name == y)
-    //     {
-    //         t_2 = 1;
-    //         break;
-    //     }
-    //     else
-    //     {
-    //         r_2 = r_2->broSis;
-    //     }
-    // }
-    // if (t_1 == 1 || t_2 == 1)
-    // {
-    //     return true;
-    // }
-    // if (t_1 == 0 && t_2 == 0)
-    // {
-    //     return false;
-    // }
 }
 
-// distanRelation function
+// distanRelation function - O(n)
 bool distanRelation(string x, string y)
 {
     if (isGrandParent(x, y) == false && isbroSis(x, y) == false)
@@ -208,7 +180,7 @@ bool distanRelation(string x, string y)
     }
 }
 
-// findSameParent function
+// findSameParent function - O(n)
 string findSameParent(string x, string y)
 {
     node *a = find(x, head);
@@ -232,10 +204,30 @@ string findSameParent(string x, string y)
     return a->name;
 }
 
-// farthestBorn function
-int farthestBorn(string name)
+vector<int> k1;
+// farthestBorn function - O(n)
+void farthestBorn(string name, node *p, int t) // p = head & t = 1
 {
-    // later
+    if (p->broSis == NULL && p->firstChild == NULL)
+    {
+        k1.push_back(t);
+    }
+    else
+    {
+        if (p->broSis != NULL && p->firstChild == NULL)
+        {
+            farthestBorn(name, p->broSis, t);
+        }
+        else if (p->broSis == NULL && p->firstChild != NULL)
+        {
+            farthestBorn(name, p->firstChild, t + 1);
+        }
+        else if (p->broSis != NULL && p->firstChild != NULL)
+        {
+            farthestBorn(name, p->broSis, t);
+            farthestBorn(name, p->firstChild, t + 1);
+        }
+    }
 }
 
 // farthest relationship of tree
@@ -488,6 +480,7 @@ void Visualize(string className, string params, bool Compile = true)
 
 int main()
 {
+    MD5 *md5 = new MD5();
     cout << "Welcome to Family Tree!\n";
     while (true)
     {
@@ -519,6 +512,12 @@ int main()
             }
             else
             {
+                md5->Update((uint8_t *)name.c_str(), name.length());
+                md5->Final();
+                name = md5->hex_digest();
+                md5->Update((uint8_t *)parent.c_str(), parent.length());
+                md5->Final();
+                parent = md5->hex_digest();
                 add(parent, name, level);
             }
             break;
@@ -529,6 +528,9 @@ int main()
             string name;
             cout << "Enter a name to delete: ";
             cin >> name;
+            md5->Update((uint8_t *)name.c_str(), name.length());
+            md5->Final();
+            name = md5->hex_digest();
             deleteMember(name);
             break;
         }
@@ -545,6 +547,12 @@ int main()
             string parent, name;
             cout << "Enter parent and child name: ";
             cin >> parent >> name;
+            md5->Update((uint8_t *)name.c_str(), name.length());
+            md5->Final();
+            name = md5->hex_digest();
+            md5->Update((uint8_t *)parent.c_str(), parent.length());
+            md5->Final();
+            parent = md5->hex_digest();
             if (isGrandParent(parent, name))
             {
                 cout << "A is grandparent of B" << endl;
@@ -561,6 +569,12 @@ int main()
             string firstName, secondName;
             cout << "Enter two names: ";
             cin >> firstName >> secondName;
+            md5->Update((uint8_t *)firstName.c_str(), firstName.length());
+            md5->Final();
+            firstName = md5->hex_digest();
+            md5->Update((uint8_t *)secondName.c_str(), secondName.length());
+            md5->Final();
+            secondName = md5->hex_digest();
             if (isbroSis(firstName, secondName))
             {
                 cout << "They are siblings" << endl;
@@ -577,6 +591,12 @@ int main()
             string firstName, secondName;
             cout << "Enter two names: ";
             cin >> firstName >> secondName;
+            md5->Update((uint8_t *)firstName.c_str(), firstName.length());
+            md5->Final();
+            firstName = md5->hex_digest();
+            md5->Update((uint8_t *)secondName.c_str(), secondName.length());
+            md5->Final();
+            secondName = md5->hex_digest();
             if (distanRelation(firstName, secondName))
             {
                 cout << "They have far relationship" << endl;
@@ -593,6 +613,12 @@ int main()
             string firstName, secondName;
             cout << "Enter two names: ";
             cin >> firstName >> secondName;
+            md5->Update((uint8_t *)firstName.c_str(), firstName.length());
+            md5->Final();
+            firstName = md5->hex_digest();
+            md5->Update((uint8_t *)secondName.c_str(), secondName.length());
+            md5->Final();
+            secondName = md5->hex_digest();
             cout << firstName << " and " << secondName << " same parent is: " << findSameParent(firstName, secondName) << endl;
             break;
         }
@@ -602,7 +628,22 @@ int main()
             string name;
             cout << "Enter name: ";
             cin >> name;
-            cout << "The farthest born of " << name << " is " << farthestBorn(name) << endl;
+            md5->Update((uint8_t *)name.c_str(), name.length());
+            md5->Final();
+            name = md5->hex_digest();
+            node *d = new node();
+            d = find(name, head);
+            farthestBorn(name, d, 1);
+            int max = 0;
+            for (int i = 0; i < k1.size(); i++)
+            {
+                if (max < k1[i])
+                {
+                    max = k1[i];
+                }
+            }
+            cout << "The farthest born of " << name << " is " << max << endl;
+            k1.clear();
             break;
         }
         case 9:

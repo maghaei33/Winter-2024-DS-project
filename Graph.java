@@ -5,15 +5,14 @@ import javax.swing.JFrame;
 
 public class Graph {
 
-    public static void main(String[] args) throws Exception 
-    {
+    public static void main(String[] args) throws Exception {
         // Setting Frame class static variables
-        Frame.rectWidth = 120;
+        Frame.rectWidth = 245;
         Frame.rectHeight = 40;
         Frame.RectColor = Color.LIGHT_GRAY;
         Frame.TextColor = Color.BLACK;
         Frame.LineColor = Color.DARK_GRAY;
-        
+
         Frame frame = new Frame();
         frame.color = Color.red;
 

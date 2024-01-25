@@ -2,9 +2,7 @@
 #include <string>
 #include <vector>
 #include <cstring>
-
 using namespace std;
-//salam
 struct node
 {
     node *parent = nullptr;
@@ -22,8 +20,8 @@ bool isbroSis(string x, string y);
 
 vector<string> parent_1;
 vector<string> parent_2;
-
-// size function
+//---------------------------------------------------Part1 : Basic functions : size-delete-find-add
+// size function - O(n)
 int size(int t, node *p)
 {
     if (p == NULL)
@@ -36,7 +34,7 @@ int size(int t, node *p)
     return t;
 }
 
-// delete function
+// delete function - O(n)
 void deleteMember(string x)
 {
     node *p = new node();
@@ -65,26 +63,31 @@ void deleteMember(string x)
     }
 }
 
-// find finction
+// find fnction - O(n)
 node *find(string x, node *p)
 {
+
     if (p == NULL)
     {
-        return NULL;
+        return nullptr;
     }
+
     if (p->name == x)
     {
-        return p;
+       return p; 
     }
-    node *result = find(x, p->firstChild);
-    if (result != NULL)
+
+    node* result = find(x, p->broSis);
+    if (result != nullptr)
     {
         return result;
-    }
-    return find(x, p->broSis);
+    } return result;
+
+    return find(x, p->firstChild);
+
 }
 
-// add functions
+// add functions - O(1) , O(n+|brosis|)
 void addstart(string member)
 {
     head->name = member;
@@ -113,7 +116,9 @@ void add(string parent, string member, int level)
     }
 }
 
-// isGrandParent function
+//---------------------------------------------------Part2 : Advance functions : isGrandParent-isbroSis-distanRelation-findSameParent-farthestBorn-farthestRelation
+
+// isGrandParent function - O(n+|brosis|)
 bool isGrandParent(string x, string y)
 {
     node *k = new node();
@@ -143,11 +148,9 @@ bool isGrandParent(string x, string y)
     }
 }
 
-// isbroSis function
-bool isbroSis(string x, string y)
+// isbroSis function - O(n)
+bool isbroSis(string x, string y) 
 {
-    // int t_1 = 0;
-    // int t_2 = 0;
     node *r_1 = new node();
     node *r_2 = new node();
     r_1 = find(x, head);
@@ -160,41 +163,9 @@ bool isbroSis(string x, string y)
     {
         return false;
     }
-    // while (r_1->broSis != NULL)
-    // {
-    //     if (r_1->name == y)
-    //     {
-    //         t_1 = 1;
-    //         break;
-    //     }
-    //     else
-    //     {
-    //         r_1 = r_1->broSis;
-    //     }
-    // }
-    // while (r_2->broSis != NULL)
-    // {
-    //     if (r_2->name == y)
-    //     {
-    //         t_2 = 1;
-    //         break;
-    //     }
-    //     else
-    //     {
-    //         r_2 = r_2->broSis;
-    //     }
-    // }
-    // if (t_1 == 1 || t_2 == 1)
-    // {
-    //     return true;
-    // }
-    // if (t_1 == 0 && t_2 == 0)
-    // {
-    //     return false;
-    // }
 }
 
-// distanRelation function
+// distanRelation function - O(n)
 bool distanRelation(string x, string y)
 {
     if (isGrandParent(x, y) == false && isbroSis(x, y) == false)
@@ -207,7 +178,7 @@ bool distanRelation(string x, string y)
     }
 }
 
-// findSameParent function
+// findSameParent function - O(n)
 string findSameParent(string x, string y)
 {
     node *a = find(x, head);
@@ -231,10 +202,31 @@ string findSameParent(string x, string y)
     return a->name;
 }
 
-// farthestBorn function
-int farthestBorn(string name)
+vector <int> k1;
+// farthestBorn function - O(n)
+void farthestBorn(string name , node* p , int t) // p = head & t = 1
 {
-    // later
+    if(p->broSis==NULL && p->firstChild==NULL)
+    {
+        k1.push_back(t);
+    }
+    else
+    {
+        if(p->broSis!=NULL && p->firstChild==NULL)
+        {
+            farthestBorn(name , p->broSis,t);
+        }
+        else if(p->broSis==NULL && p->firstChild!=NULL)
+        {
+            farthestBorn(name , p->firstChild,t+1); 
+        }
+        else if(p->broSis!=NULL && p->firstChild!=NULL)
+        {
+            farthestBorn(name , p->broSis,t);
+            farthestBorn(name , p->firstChild,t+1);    
+        }
+
+    }
 }
 
 // farthest relationship of tree

@@ -202,10 +202,9 @@ string findSameParent(string x, string y)
     }
     return a->name;
 }
-
 vector <int> k1;
 // farthestBorn function - O(n)
-void farthestBorn(string name , node* p , int t) // p = head & t = 1
+void farthestBorn(string name , node* p , int t ) // p = head & t = 1
 {
     if(p->broSis==NULL && p->firstChild==NULL)
     {
@@ -233,7 +232,12 @@ void farthestBorn(string name , node* p , int t) // p = head & t = 1
 // farthest relationship of tree
 vector<string> farthestRelation()
 {
-    // not yet
+    
+
+
+
+
+
 }
 
 int getChildCount(node *n)

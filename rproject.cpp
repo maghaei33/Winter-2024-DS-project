@@ -2,7 +2,8 @@
 #include <string>
 #include <vector>
 #include <cstring>
-#include<algorithm>
+#include <algorithm>
+#include "MD5.h"
 using namespace std;
 struct node
 {
@@ -12,7 +13,7 @@ struct node
     string name;
     int level;
 };
-//salam
+// salam
 node *head = new node();
 
 node *find(string x, node *p);
@@ -78,14 +79,14 @@ node *find(string x, node *p)
        return p; 
     }
 
-    node* result = find(x, p->broSis);
+    node *result = find(x, p->broSis);
     if (result != nullptr)
     {
         return result;
-    } return result;
+    }
+    return result;
 
     return find(x, p->firstChild);
-
 }
 
 // add functions - O(1) , O(n+|brosis|)
@@ -150,7 +151,7 @@ bool isGrandParent(string x, string y)
 }
 
 // isbroSis function - O(n)
-bool isbroSis(string x, string y) 
+bool isbroSis(string x, string y)
 {
     node *r_1 = new node();
     node *r_2 = new node();
@@ -212,20 +213,19 @@ void farthestBorn(string name , node* p , int t ) // p = head & t = 1
     }
     else
     {
-        if(p->broSis!=NULL && p->firstChild==NULL)
+        if (p->broSis != NULL && p->firstChild == NULL)
         {
-            farthestBorn(name , p->broSis,t);
+            farthestBorn(name, p->broSis, t);
         }
-        else if(p->broSis==NULL && p->firstChild!=NULL)
+        else if (p->broSis == NULL && p->firstChild != NULL)
         {
-            farthestBorn(name , p->firstChild,t+1); 
+            farthestBorn(name, p->firstChild, t + 1);
         }
-        else if(p->broSis!=NULL && p->firstChild!=NULL)
+        else if (p->broSis != NULL && p->firstChild != NULL)
         {
-            farthestBorn(name , p->broSis,t);
-            farthestBorn(name , p->firstChild,t+1);    
+            farthestBorn(name, p->broSis, t);
+            farthestBorn(name, p->firstChild, t + 1);
         }
-
     }
 }
 
@@ -484,6 +484,7 @@ void Visualize(string className, string params, bool Compile = true)
 
 int main()
 {
+    MD5 *md5 = new MD5();
     cout << "Welcome to Family Tree!\n";
     while (true)
     {
@@ -515,6 +516,12 @@ int main()
             }
             else
             {
+                md5->Update((uint8_t *)name.c_str(), name.length());
+                md5->Final();
+                name = md5->hex_digest();
+                md5->Update((uint8_t *)parent.c_str(), parent.length());
+                md5->Final();
+                parent = md5->hex_digest();
                 add(parent, name, level);
             }
             break;
@@ -525,6 +532,9 @@ int main()
             string name;
             cout << "Enter a name to delete: ";
             cin >> name;
+            md5->Update((uint8_t *)name.c_str(), name.length());
+            md5->Final();
+            name = md5->hex_digest();
             deleteMember(name);
             break;
         }
@@ -541,6 +551,12 @@ int main()
             string parent, name;
             cout << "Enter parent and child name: ";
             cin >> parent >> name;
+            md5->Update((uint8_t *)name.c_str(), name.length());
+            md5->Final();
+            name = md5->hex_digest();
+            md5->Update((uint8_t *)parent.c_str(), parent.length());
+            md5->Final();
+            parent = md5->hex_digest();
             if (isGrandParent(parent, name))
             {
                 cout << "A is grandparent of B" << endl;
@@ -557,6 +573,12 @@ int main()
             string firstName, secondName;
             cout << "Enter two names: ";
             cin >> firstName >> secondName;
+            md5->Update((uint8_t *)firstName.c_str(), firstName.length());
+            md5->Final();
+            firstName = md5->hex_digest();
+            md5->Update((uint8_t *)secondName.c_str(), secondName.length());
+            md5->Final();
+            secondName = md5->hex_digest();
             if (isbroSis(firstName, secondName))
             {
                 cout << "They are siblings" << endl;
@@ -573,6 +595,12 @@ int main()
             string firstName, secondName;
             cout << "Enter two names: ";
             cin >> firstName >> secondName;
+            md5->Update((uint8_t *)firstName.c_str(), firstName.length());
+            md5->Final();
+            firstName = md5->hex_digest();
+            md5->Update((uint8_t *)secondName.c_str(), secondName.length());
+            md5->Final();
+            secondName = md5->hex_digest();
             if (distanRelation(firstName, secondName))
             {
                 cout << "They have far relationship" << endl;
@@ -589,6 +617,12 @@ int main()
             string firstName, secondName;
             cout << "Enter two names: ";
             cin >> firstName >> secondName;
+            md5->Update((uint8_t *)firstName.c_str(), firstName.length());
+            md5->Final();
+            firstName = md5->hex_digest();
+            md5->Update((uint8_t *)secondName.c_str(), secondName.length());
+            md5->Final();
+            secondName = md5->hex_digest();
             cout << firstName << " and " << secondName << " same parent is: " << findSameParent(firstName, secondName) << endl;
             break;
         }
@@ -598,15 +632,18 @@ int main()
             string name;
             cout << "Enter name: ";
             cin >> name;
-            node* d = new node();
-            d = find(name,head);
-            farthestBorn(name,d,1);
-            int max=0;
-            for(int i= 0 ; i<k1.size();i++)
+            md5->Update((uint8_t *)name.c_str(), name.length());
+            md5->Final();
+            name = md5->hex_digest();
+            node *d = new node();
+            d = find(name, head);
+            farthestBorn(name, d, 1);
+            int max = 0;
+            for (int i = 0; i < k1.size(); i++)
             {
-                if (max<k1[i])
+                if (max < k1[i])
                 {
-                    max=k1[i];
+                    max = k1[i];
                 }
             }
             cout << "The farthest born of " << name << " is " << max << endl;

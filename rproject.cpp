@@ -205,7 +205,7 @@ string findSameParent(string x, string y)
 }
 vector <int> k1;
 // farthestBorn function - O(n)
-void farthestBorn(string name , node* p , int t ) // p = head & t = 1
+void farthestBorn(node* p , int t ) // p = head & t = 1
 {
     if(p->broSis==NULL && p->firstChild==NULL)
     {
@@ -215,29 +215,43 @@ void farthestBorn(string name , node* p , int t ) // p = head & t = 1
     {
         if (p->broSis != NULL && p->firstChild == NULL)
         {
-            farthestBorn(name, p->broSis, t);
+            farthestBorn(p->broSis, t);
         }
         else if (p->broSis == NULL && p->firstChild != NULL)
         {
-            farthestBorn(name, p->firstChild, t + 1);
+            farthestBorn(p->firstChild, t + 1);
         }
         else if (p->broSis != NULL && p->firstChild != NULL)
         {
-            farthestBorn(name, p->broSis, t);
-            farthestBorn(name, p->firstChild, t + 1);
+            farthestBorn(p->broSis, t);
+            farthestBorn(p->firstChild, t + 1);
         }
     }
 }
 
 // farthest relationship of tree
-vector<string> farthestRelation()
+void farthestRelation(node* p , int t)
 {
-    
-
-
-
-
-
+    if(p->broSis==NULL && p->firstChild==NULL)
+    {
+        k1.push_back(t);
+    }
+    else
+    {
+        if (p->broSis != NULL && p->firstChild == NULL)
+        {
+            farthestRelation(p->broSis, t);
+        }
+        else if (p->broSis == NULL && p->firstChild != NULL)
+        {
+            farthestRelation(p->firstChild, t + 1);
+        }
+        else if (p->broSis != NULL && p->firstChild != NULL)
+        {
+            farthestRelation(p->broSis, t);
+            farthestRelation(p->firstChild, t + 1);
+        }
+    }
 }
 
 int getChildCount(node *n)
@@ -637,7 +651,7 @@ int main()
             name = md5->hex_digest();
             node *d = new node();
             d = find(name, head);
-            farthestBorn(name, d, 1);
+            farthestBorn(d, 1);
             int max = 0;
             for (int i = 0; i < k1.size(); i++)
             {
@@ -653,8 +667,6 @@ int main()
         case 9:
         {
             // if 9 --------> find farthest relationship
-            vector<string> names = farthestRelation();
-            cout << names[0] << " and " << names[1] << " has farthest relationship in this tree" << endl;
             break;
         }
         case 10:

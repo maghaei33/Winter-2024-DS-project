@@ -2,6 +2,7 @@
 #include <string>
 #include <vector>
 #include <cstring>
+#include<algorithm>
 using namespace std;
 struct node
 {
@@ -593,7 +594,19 @@ int main()
             string name;
             cout << "Enter name: ";
             cin >> name;
-            cout << "The farthest born of " << name << " is " << farthestBorn(name) << endl;
+            node* d = new node();
+            d = find(name,head);
+            farthestBorn(name,d,1);
+            int max=0;
+            for(int i= 0 ; i<k1.size();i++)
+            {
+                if (max<k1[i])
+                {
+                    max=k1[i];
+                }
+            }
+            cout << "The farthest born of " << name << " is " << max << endl;
+            k1.clear();
             break;
         }
         case 9:

@@ -11,7 +11,7 @@ struct node
     string name;
     int level;
 };
-
+//salam
 node *head = new node();
 
 node *find(string x, node *p);

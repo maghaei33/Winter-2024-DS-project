@@ -27,23 +27,13 @@ vector<string> parent_2;
 // size function
 int size(int t, node *p)
 {
-    if (p->firstChild != NULL && p->broSis == NULL)
+    if (p == NULL)
     {
-        t++;
-        size(t, p->firstChild);
+        return t;
     }
-    if (p->firstChild == NULL && p->broSis != NULL)
-    {
-        t++;
-        size(t, p->broSis);
-    }
-    if (p->firstChild == NULL && p->broSis == NULL)
-    {
-        t++;
-        t++;
-        size(t, p->firstChild);
-        size(t, p->broSis);
-    }
+    t++;
+    t = size(t, p->firstChild);
+    t = size(t, p->broSis);
     return t;
 }
 
@@ -105,7 +95,6 @@ void add(string parent, string member, int level)
 {
     node *p = new node();
     p = find(parent, head);
-    cout << p->name << endl;
     node *child = new node();
     child->name = member;
     child->parent = p;
@@ -224,29 +213,23 @@ string findSameParent(string x, string y)
 {
     node *a = find(x, head);
     node *b = find(y, head);
-    if (a->level > b->level)
+    while (a != b)
     {
-        while (a->level != b->level)
+        if (a->level > b->level)
         {
             a = a->parent;
         }
-    }
-    else if (a->level < b->level)
-    {
-        while (b->level != a->level)
+        else if (a->level < b->level)
         {
             b = b->parent;
         }
-    }
-    else
-    {
-        while (a != b)
+        else
         {
             a = a->parent;
             b = b->parent;
         }
-        return a->name;
     }
+    return a->name;
 }
 
 // farthestBorn function
@@ -569,8 +552,8 @@ int main()
             else
             {
                 cout << "A is not grandparent of B" << endl;
-                break;
             }
+            break;
         }
         case 5:
         {
@@ -638,6 +621,7 @@ int main()
             break;
         }
         default:
+            cout << "Wrong command..." << endl;
             break;
         }
     }
